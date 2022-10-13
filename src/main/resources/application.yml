@@ -1,0 +1,131 @@
+server:
+  port: 8089
+# 插件配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Druid数据源配置
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  main:
+    allow-circular-references: true
+  datasource:
+    #   数据源基本配置
+    username: schoolcovid
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/schoolcovid?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    type: com.alibaba.druid.pool.DruidDataSource
+    #   Druid数据源配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+    ##############################
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 500
+        min-idle: 0
+    lettuce:
+      shutdown-timeout: 0ms
+    ##############################
+  mail:
+    # 配置 SMTP 服务器地址
+    host: smtp.qq.com
+    # 发送者邮箱
+    username: 860786071@qq.com
+    # 配置密码，注意不是真正的密码，而是刚刚申请到的授权码
+    password: mwrwpwtrxjtwbaje
+    # 端口号465或587
+    port: 587
+    # 默认的邮件编码为UTF-8
+    default-encoding: UTF-8
+    # 配置SSL 加密工厂
+    properties:
+      mail:
+        smtp:
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+          #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
+
+#数据接口
+url:
+  news:
+  covid:
+#mqtt配置
+  application:
+    name: mica-mqtt-server
+  profiles:
+    active: server
+springdoc:
+  swagger-ui:
+    urls:
+      - name: swagger
+        url: /v3/api-docs
+# actuator management
+management:
+  info:
+    defaults:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoint:
+    health:
+      show-details: ALWAYS
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    root: info
+    server: info # t-io 服务端默认日志
+    org.tio: info # t-io 服务端默认日志
+
+mqtt:
+  server:
+    enabled: true               # 是否开启服务端，默认：true
+    #    ip: 0.0.0.0                # 服务端 ip 默认为空，0.0.0.0，建议不要设置
+    port: 1885                  # 端口，默认：1883
+    name: Mica-Mqtt-Server      # 名称，默认：Mica-Mqtt-Server
+    buffer-allocator: HEAP      # 堆内存和堆外内存，默认：堆内存
+    heartbeat-timeout: 120000   # 心跳超时，单位毫秒，默认: 1000 * 120
+    read-buffer-size: 8KB       # 接收数据的 buffer size，默认：8k
+    max-bytes-in-message: 10MB  # 消息解析最大 bytes 长度，默认：10M
+    auth:
+      enable: false             # 是否开启 mqtt 认证
+      username: mica            # mqtt 认证用户名
+      password: mica            # mqtt 认证密码
+    debug: true                 # 如果开启 prometheus 指标收集建议关闭
+    stat-enable: true           # 开启指标收集，debug 和 prometheus 开启时需要打开，默认开启，关闭节省内存
+    web-port: 8085              # http、websocket 端口，默认：80835
+    websocket-enable: true      # 是否开启 websocket，默认： true
+    http-enable: false          # 是否开启 http api，默认： false
+    http-basic-auth:
+      enable: false             # 是否开启 http basic auth，默认： false
+      username: mica            # http basic auth 用户名
+      password: mica            # http basic auth 密码
